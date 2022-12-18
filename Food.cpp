@@ -1,25 +1,23 @@
 #include "Food.h"
 
-Food::Food(glm::vec2 pos, float sideLength)
+Food::Food(Player player)
 {
-	this->isEaten = false;
-	this->pos = pos;
-	this->sideLength = sideLength;
-	calculateVertices();
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_DYNAMIC_DRAW);
-
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	glBindVertexArray(0);
+	glm::vec2 playerCenter = player.getCenter();
+	this->center = glm::vec2(playerCenter.x+5, playerCenter.y+5);
+	this->sideLength = 40;
+	unsigned int indicies[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+	verticies = this->updateVerticies();
+	va = new VertexArray();
+	ib = new IndexBuffer(indicies, 6);
+	vb = new VertexBuffer(&verticies[0], verticies.size() * sizeof(float));
+	VertexBufferLayout layout;
+	layout.push<float>(2);
+	layout.push<float>(2);
+	va->AddBuffer(*vb, layout);
+	texture = new Texture("food.png");
 }
 /*
 bool Food::collidingWithPlayer(Player& player)
@@ -105,37 +103,49 @@ bool Food::hasBeenEaten()
 	return this->isEaten;
 }
 
-void Food::draw()
+void Food::draw(Renderer* renderer, Shader* shader)
 {
 	if (!isEaten)
 	{
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glBindVertexArray(0);
+		texture->Bind();
+		shader->setUniform1i(std::string("u_Texture"),0);
+		renderer->Draw(this->va, this->ib, shader, GL_TRIANGLES);
 	}
 }
 
-void Food::calculateVertices()
+std::vector<float> Food::updateVerticies()
 {
 	/*
-	      A
-		 / \
-		/   \
-	   /  c  \
-	  B_______C
+	calculate te square's 4 verticies(A, B, C, D) using the center point(c) and sideLength(s)
 
-	  c is the center of the triangle given by the (x, y) coordinates in the constructor
+		A_______________B
+		|               |
+		|               |
+		|       c       |s
+		|               |
+		|_______________|
+		C               D
 	*/
-	// calculate the coordiantes of the vertex at the top (vertex A)
-	vertices.push_back(this->pos.x); // x coordinate of vertex A
-	vertices.push_back(this->pos.y - ((float)sqrt(3) / 2.0f) * sideLength); // y coordiante of vertex A
-	vertices.push_back(0);
-	//calculate the coordiantes of the vertex at the top (vertex C)
-	vertices.push_back(this->pos.x + (sideLength / 2.0f)); // x coordinate of vertex C
-	vertices.push_back(this->pos.y - ((float)sqrt(3) / 6.0f) * sideLength); // y coordiante of vertex C
-	vertices.push_back(0);
-	//calculate the coordiantes of the vertex at the top (vertex B)
-	vertices.push_back(this->pos.x - (sideLength / 2.0f)); // x coordinate of vertex B
-	vertices.push_back(this->pos.y - ((float)sqrt(3) / 6.0f) * sideLength); // y coordiante of vertex B
-	vertices.push_back(0);
+	std::vector<float> result;
+	// Calculate C                        
+	result.push_back(this->center.x - (this->sideLength / 2.0f)); // X pos
+	result.push_back(this->center.y + (this->sideLength / 2.0f)); // Y pos  
+	result.push_back(0.0f); // tex coordinate
+	result.push_back(0.0f); // tex coordinate
+	// Calculate D                       
+	result.push_back(this->center.x + (this->sideLength / 2.0f)); // X pos
+	result.push_back(this->center.y + (this->sideLength / 2.0f)); // Y pos
+	result.push_back(1.0f); // tex coordinate
+	result.push_back(0.0f); // tex coordinate
+	// Calculate B                       
+	result.push_back(this->center.x + (this->sideLength / 2.0f)); // X pos
+	result.push_back(this->center.y - (this->sideLength / 2.0f)); // Y pos
+	result.push_back(1.0f); // tex coordinate
+	result.push_back(1.0f); // tex coordinate
+	// Calculate A
+	result.push_back(this->center.x - (this->sideLength / 2.0f)); // X pos
+	result.push_back(this->center.y - (this->sideLength / 2.0f)); // Y pos   
+	result.push_back(0.0f); // tex coordinate
+	result.push_back(1.0f); // tex coordinate
+	return result;
 }

@@ -11,16 +11,19 @@ class Food
 {
 public:
 	Food() = default;
-	Food(glm::vec2 pos, float sideLength);
+	Food(Player player);
 	bool collidingWithPlayer(Player& player);
 	bool hasBeenEaten();
-	void draw();
+	void draw(Renderer* renderer, Shader* shader);
+	std::vector<float> updateVerticies();
 private:
-	void calculateVertices();
 	float sideLength;
-	glm::vec2 pos;
-	std::vector<float> vertices;
-	unsigned int VBO, VAO;
+	glm::vec2 center;
+	std::vector<float> verticies;
 	bool isEaten;
+	VertexArray* va;
+	IndexBuffer* ib;
+	VertexBuffer* vb;
+	Texture* texture;
 };
 
