@@ -1,8 +1,8 @@
 #include "Food.h"
 
-Food::Food(Player player)
+Food::Food(Player * player)
 {
-	glm::vec2 playerCenter = player.getCenter();
+	glm::vec2 playerCenter = player->getCenter();
 	this->center = glm::vec2(playerCenter.x+5, playerCenter.y+5);
 	this->sideLength = 40;
 	unsigned int indicies[] = {

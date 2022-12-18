@@ -62,13 +62,13 @@ int main()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	Player* player = new Player(glm::vec2(250.0f, 250.0f), 100.0f, 10.0f);
 	
-	int num_Food = 0;
-	std::vector <Food*> food_pointer = std::vector <Food*>(num_Food);
+	int num_Food = 30;
+	std::vector <Food*> food_pointer ;
 	for (int i = 0; i < num_Food; i++)
-		food_pointer[i] = new Food(*player);
+		food_pointer.push_back(new Food(player));
 
-	std::string VSPath = "D:\\OneDrive - Nile University\\CSCI452\\Project\\ComputerGraphicsProject\\Shaders\\SimpleVertexShader.vertexshader";
-	std::string FSPath = "D:\\OneDrive - Nile University\\CSCI452\\Project\\ComputerGraphicsProject\\Shaders\\SimpleFragmentShader.fragmentshader";
+	std::string VSPath = "Shaders\\SimpleVertexShader.vertexshader";
+	std::string FSPath = "Shaders\\SimpleFragmentShader.fragmentshader";
 	Shader* sh = new Shader(VSPath, FSPath);
 	sh->useShader();
 	Texture texture("pngegg.png");
@@ -93,7 +93,7 @@ int main()
 
 		player->draw(renderer, sh);
 		for (int i = 0; i < num_Food; i++)
-			food_pointer[i]->draw(renderer, sh);
+			food_pointer[i]->draw(renderer, sh); 
 		renderer->Draw(va, ib, sh, GL_TRIANGLES);
 
 

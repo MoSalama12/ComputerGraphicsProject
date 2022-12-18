@@ -11,7 +11,7 @@ class Food
 {
 public:
 	Food() = default;
-	Food(Player player);
+	Food(Player * player);
 	bool collidingWithPlayer(Player& player);
 	bool hasBeenEaten();
 	void draw(Renderer* renderer, Shader* shader);
