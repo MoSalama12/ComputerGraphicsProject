@@ -71,8 +71,25 @@ void Shader::destroyShader()
 	glDeleteProgram(this->programID);
 }
 
-void Shader::uniformMat4x4(const char* uniformName, glm::mat4x4 mat)
+void Shader::setUniformMat4f(std::string name, glm::mat4x4 mat)
 {
-	int location = glGetUniformLocation(programID, uniformName);
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat));
+	glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+int Shader::getUniformLocation(const std::string& name)
+{
+	if (uniformLocationCache.find(name) != uniformLocationCache.end())
+	{
+		return uniformLocationCache[name];
+	}
+	int location = glGetUniformLocation(programID, name.c_str());
+	if (location == -1)
+		std::cout << "Uniform " << name << " does not exist!\n";
+	uniformLocationCache[name] = location;
+	return location;
+}
+
+void Shader::setUniform1i(std::string name, int value)
+{
+	glUniform1i(getUniformLocation(name), value);
 }

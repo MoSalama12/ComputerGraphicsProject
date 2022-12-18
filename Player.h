@@ -4,6 +4,12 @@
 #include "Camera2D.h"
 #include <GLFW/glfw3.h>
 #include <cmath>
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "VertexBuffer.h"
+#include "Renderer.h"
+#include "Texture.h"
 
 enum class directions
 {
@@ -14,19 +20,27 @@ class Player
 {
 public:
 	Player() = default;
-	Player(glm::vec2 center, float radius, float speed);
-	void draw();
+	~Player();
+	Player(glm::vec2 center, float sideLength, float speed);
+	void draw(Renderer* renderer, Shader* shader);
 	void move(directions direction);
 	std::vector<float> updateVerticies();
 	Camera2D getCamera();
 	void updateZoom(float amount);
+	VertexArray* getVertexArray();
+	IndexBuffer* getIndexBuffer();
+
 	glm::vec2 getCenter();
-	float getRadius();
+	float getSideLength();
 private:
-	float radius, speed;
+	float sideLength, speed;
 	glm::vec2 center;
 	std::vector<float> verticies;
-	unsigned int VBO, VAO;
+	VertexArray* va;
+	IndexBuffer* ib;
+	VertexBuffer* vb;
+	Texture* texture;
+
 	Camera2D camera;
 };
 

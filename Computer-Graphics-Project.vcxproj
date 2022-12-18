@@ -153,8 +153,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera2D.cpp" />
-    <ClCompile Include="Food.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -169,8 +167,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera2D.h" />
-    <ClInclude Include="Food.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Renderer.h" />

@@ -21,7 +21,7 @@ Food::Food(glm::vec2 pos, float sideLength)
 
 	glBindVertexArray(0);
 }
-
+/*
 bool Food::collidingWithPlayer(Player& player)
 {
 	// player colliding with vertex
@@ -43,7 +43,6 @@ bool Food::collidingWithPlayer(Player& player)
 	}
 
 	// player colliding with sides
-	/*
 	float edge1x = this->vertices[3] - this->vertices[0];
 	float edge1y = this->vertices[4] - this->vertices[1];
 	float edge2x = this->vertices[6] - this->vertices[3];
@@ -98,8 +97,8 @@ bool Food::collidingWithPlayer(Player& player)
 		}
 	}
 	return false;
-	*/
-}
+	
+}*/
 
 bool Food::hasBeenEaten()
 {

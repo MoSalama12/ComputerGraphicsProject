@@ -6,10 +6,15 @@ class Texture
 {
 public:
 	Texture() = default;
-	Texture(const char* src);
-	void Bind();
+	~Texture();
+	Texture(std::string filepath);
+	int getWidth() { return width; }
+	int getHeight() { return height; }
+	void Bind(unsigned int slot = 0);
+	void Unbind();
 private:
 	int width, height, numberOfChannels;
+	std::string filepath;
 	unsigned char* data;
 	unsigned int texture;
 };

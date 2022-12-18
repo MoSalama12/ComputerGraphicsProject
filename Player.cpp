@@ -1,29 +1,39 @@
 #include "Player.h"
 
-Player::Player(glm::vec2 center, float radius, float speed)
+Player::Player(glm::vec2 center, float sideLength, float speed)
 {
     this->center = center;
-    this->radius = radius;
+    this->sideLength = sideLength;
     this->speed = speed;
-    this->verticies = updateVerticies();
-    camera = Camera2D(center, 1.0f);
-    glGenBuffers(1, &VBO);
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), &verticies[0], GL_DYNAMIC_DRAW);
+    unsigned int indicies[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+    this->verticies = std::vector<float>(16);
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    verticies = this->updateVerticies();
+    va = new VertexArray();
+    ib = new IndexBuffer(indicies, 6);
+    camera = Camera2D(center, 1.0f);
+    vb = new VertexBuffer(&verticies[0], verticies.size() * sizeof(float));
+    VertexBufferLayout layout;
+    layout.push<float>(2);
+    layout.push<float>(2);
+    va->AddBuffer(*vb, layout);
+    texture = new Texture("pngegg.png");
+
+}
+Player::~Player()
+{
+    delete va;
+    delete vb;
+    delete ib;
 }
 
-void Player::draw()
+void Player::draw(Renderer* renderer, Shader* shader)
 {
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, verticies.size() / 3);
-    glBindVertexArray(0);
+    texture->Bind();
+    renderer->Draw(this->va, this->ib, shader, GL_TRIANGLES);
 }
 
 void Player::move(directions direction)
@@ -43,29 +53,51 @@ void Player::move(directions direction)
         this->center.x += speed;
         break;
     }
-    verticies = updateVerticies();
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, verticies.size() * sizeof(float), &verticies[0], GL_DYNAMIC_DRAW);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    this->verticies = this->updateVerticies();
+    va->Bind();
+    vb = new VertexBuffer(&verticies[0], verticies.size() * sizeof(float));
+    VertexBufferLayout layout;
+    layout.push<float>(2);
+    layout.push<float>(2);
+    va->AddBuffer(*vb, layout);
     camera.setFocusPosition(center);
 }
 
 std::vector<float> Player::updateVerticies()
 {
-    std::vector<float> points;
-    int numOfTriangles = 360;
-    const float pi = 3.14159265f;
-    for (int i = 0; i < numOfTriangles + 1; i++)
-    {
-        float theta = (float)((float)i / numOfTriangles * 2 * pi);
-        points.push_back((float)(this->center.x + radius * cos(theta)));
-        points.push_back((float)(this->center.y + radius * sin(theta)));
-        points.push_back(0);
-    }
+    /*
+    calculate te square's 4 verticies(A, B, C, D) using the center point(c) and sideLength(s)
 
-    return points;
+        A_______________B
+        |               |
+        |               |
+        |       c       |s
+        |               |
+        |_______________|
+        C               D
+    */
+    std::vector<float> result;
+                  // Calculate C                        
+    result.push_back(this->center.x - (this->sideLength / 2.0f)); // X pos
+    result.push_back(this->center.y + (this->sideLength / 2.0f)); // Y pos  
+    result.push_back(0.0f); // tex coordinate
+    result.push_back(0.0f); // tex coordinate
+                  // Calculate D                       
+    result.push_back(this->center.x + (this->sideLength / 2.0f)); // X pos
+    result.push_back(this->center.y + (this->sideLength / 2.0f)); // Y pos
+    result.push_back(1.0f); // tex coordinate
+    result.push_back(0.0f); // tex coordinate
+                  // Calculate B                       
+    result.push_back(this->center.x + (this->sideLength / 2.0f)); // X pos
+    result.push_back(this->center.y - (this->sideLength / 2.0f)); // Y pos
+    result.push_back(1.0f); // tex coordinate
+    result.push_back(1.0f); // tex coordinate
+                  // Calculate A
+    result.push_back(this->center.x - (this->sideLength / 2.0f)); // X pos
+    result.push_back(this->center.y - (this->sideLength / 2.0f)); // Y pos   
+    result.push_back(0.0f); // tex coordinate
+    result.push_back(1.0f); // tex coordinate
+    return result;
 }
 
 Camera2D Player::getCamera()
@@ -78,12 +110,22 @@ void Player::updateZoom(float amount)
     camera.zoomBy(amount);
 }
 
+VertexArray* Player::getVertexArray()
+{
+    return this->va;
+}
+
+IndexBuffer* Player::getIndexBuffer()
+{
+    return this-> ib;
+}
+
 glm::vec2 Player::getCenter()
 {
     return this->center;
 }
 
-float Player::getRadius()
+float Player::getSideLength()
 {
-    return this->radius;
+    return this->sideLength;
 }

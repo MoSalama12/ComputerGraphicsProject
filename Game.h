@@ -7,6 +7,7 @@
 #include "Dep/glm/glm.hpp"
 #include "Dep/glm/gtc/matrix_transform.hpp"
 #include "Food.h"
+#include "Renderer.h"
 
 class Game
 {
@@ -18,9 +19,10 @@ public:
 	void processInput(GLFWwindow* window);
 private:
 	GLFWwindow* window;
-	Shader sh;
+	Shader* sh;
 	unsigned int VBO, VAO, EBO;
 	Food food;
 	Player player;
+	Renderer* renderer;
 };
 
