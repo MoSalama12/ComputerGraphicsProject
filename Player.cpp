@@ -33,6 +33,7 @@ Player::~Player()
 void Player::draw(Renderer* renderer, Shader* shader)
 {
     texture->Bind();
+    shader->setUniform1i(std::string("u_Texture"), 0);
     renderer->Draw(this->va, this->ib, shader, GL_TRIANGLES);
 }
 
@@ -41,16 +42,20 @@ void Player::move(directions direction)
     switch (direction)
     {
     case directions::UP:
-        this->center.y -= speed;
+        if (this->center.y > -3000)
+            this->center.y -= speed;
         break;
     case directions::DOWN:
-        this->center.y += speed;
+        if (this->center.y < 3000)
+            this->center.y += speed;
         break;
     case directions::LEFT:
-        this->center.x -= speed;
+        if (this->center.x > -3000)
+            this->center.x -= speed;
         break;
     case directions::RIGHT:
-        this->center.x += speed;
+        if (this->center.x < 3000)
+            this->center.x += speed;
         break;
     }
     this->verticies = this->updateVerticies();
@@ -118,6 +123,46 @@ VertexArray* Player::getVertexArray()
 IndexBuffer* Player::getIndexBuffer()
 {
     return this-> ib;
+}
+
+int Player::inCollision(glm::vec2 center, float sideLength, std::string type)
+{
+    bool inCollision = (glm::distance(center, this->center) < (this->sideLength / 2.0f + sideLength / 2.0f) - 10);
+    if (inCollision)
+    {
+        if (type == "food")
+        {
+            this->sideLength += 2;
+            this->verticies = this->updateVerticies();
+            va->Bind();
+            vb = new VertexBuffer(&verticies[0], verticies.size() * sizeof(float));
+            VertexBufferLayout layout;
+            layout.push<float>(2);
+            layout.push<float>(2);
+            va->AddBuffer(*vb, layout);
+            return 1;
+        }
+        else if (type == "enemy")
+        {
+            if (this->sideLength < sideLength + 30)
+            {
+                return 2;
+            }
+            else
+            {
+                this->sideLength += 2;
+                this->verticies = this->updateVerticies();
+                va->Bind();
+                vb = new VertexBuffer(&verticies[0], verticies.size() * sizeof(float));
+                VertexBufferLayout layout;
+                layout.push<float>(2);
+                layout.push<float>(2);
+                va->AddBuffer(*vb, layout);
+                return 3;
+            }
+        }
+    }
+    return 0;
 }
 
 glm::vec2 Player::getCenter()
