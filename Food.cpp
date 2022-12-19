@@ -1,9 +1,9 @@
 #include "Food.h"
 
-Food::Food(Player * player)
+Food::Food(Player * player , int x, int y)
 {
-	glm::vec2 playerCenter = player->getCenter();
-	this->center = glm::vec2(playerCenter.x+5, playerCenter.y+5);
+	m_player = player;
+	this->center = glm::vec2(x, y);
 	this->sideLength = 40;
 	unsigned int indicies[] = {
 		0, 1, 3,
@@ -19,84 +19,6 @@ Food::Food(Player * player)
 	va->AddBuffer(*vb, layout);
 	texture = new Texture("food.png");
 }
-/*
-bool Food::collidingWithPlayer(Player& player)
-{
-	// player colliding with vertex
-	float c1x = player.getCenter().x - this->vertices[0];
-	float c1y = player.getCenter().y - this->vertices[1];
-	float c2x = player.getCenter().x - this->vertices[3];
-	float c2y = player.getCenter().y - this->vertices[4];
-	float c3x = player.getCenter().x - this->vertices[6];
-	float c3y = player.getCenter().y - this->vertices[7];
-
-
-	if ((pow(c1x, 2) + pow(c1y, 2) <= pow(player.getRadius(), 2)) ||
-		(pow(c2x, 2) + pow(c2y, 2) <= pow(player.getRadius(), 2)) ||
-		(pow(c3x, 2) + pow(c3y, 2) <= pow(player.getRadius(), 2))
-		)
-	{
-		isEaten = true;
-		return true;
-	}
-
-	// player colliding with sides
-	float edge1x = this->vertices[3] - this->vertices[0];
-	float edge1y = this->vertices[4] - this->vertices[1];
-	float edge2x = this->vertices[6] - this->vertices[3];
-	float edge2y = this->vertices[7] - this->vertices[4];
-	float edge3x = this->vertices[0] - this->vertices[6];
-	float edge3y = this->vertices[1] - this->vertices[7];
-	// first edge
-	float dot = edge1x * c1x + edge1y * c1y;
-	if (dot > 0)
-	{
-		float length = pow(edge1x, 2) + pow(edge1y, 2);
-		dot = pow(dot, 2) / length;
-		if (dot < length)
-		{
-			if ((pow(c1x, 2) + pow(c1y, 2)) - dot <= length)
-			{
-				isEaten = true;
-				return true;
-			}
-		}
-	}
-
-	// second edge
-	dot = edge2x * c2x + edge2y * c2y;
-	if (dot > 0)
-	{
-		float length = pow(edge2x, 2) + pow(edge2y, 2);
-		dot = pow(dot, 2) / length;
-		if (dot < length)
-		{
-			if ((pow(c2x, 2) + pow(c2y, 2)) - dot <= length)
-			{
-				isEaten = true;
-				return true;
-			}
-		}
-	}
-
-	// third edge
-	dot = edge3x * c3x + edge3y * c3y;
-	if (dot > 0)
-	{
-		float length = pow(edge3x, 2) + pow(edge3y, 2);
-		dot = pow(dot, 2) / length;
-		if (dot < length)
-		{
-			if ((pow(c3x, 2) + pow(c3y, 2)) - dot <= length)
-			{
-				isEaten = true;
-				return true;
-			}
-		}
-	}
-	return false;
-	
-}*/
 
 bool Food::hasBeenEaten()
 {
