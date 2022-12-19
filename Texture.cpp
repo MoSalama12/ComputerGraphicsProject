@@ -24,7 +24,7 @@ Texture::Texture(std::string src)
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		std::cout << "Failed to load texture: " << src << std::endl;
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
