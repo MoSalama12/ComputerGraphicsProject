@@ -29,6 +29,7 @@ public:
 	void updateZoom(float amount);
 	VertexArray* getVertexArray();
 	IndexBuffer* getIndexBuffer();
+	int inCollision(glm::vec2 center, float sideLength, std::string type);
 
 	glm::vec2 getCenter();
 	float getSideLength();
