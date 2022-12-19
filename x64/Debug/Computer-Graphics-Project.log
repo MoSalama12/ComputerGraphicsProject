@@ -1,6 +1,4 @@
-﻿  Food.cpp
-C:\Projects\ComputerGraphicsProject\Food.cpp(15,72): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
-  main.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+﻿  Enemy.cpp
+C:\Projects\ComputerGraphicsProject\Enemy.cpp(18,75): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Projects\ComputerGraphicsProject\Enemy.cpp(169,75): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
   Computer-Graphics-Project.vcxproj -> C:\Projects\ComputerGraphicsProject\x64\Debug\Computer-Graphics-Project.exe

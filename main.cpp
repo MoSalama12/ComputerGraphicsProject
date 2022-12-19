@@ -3,12 +3,9 @@
 #include <GLFW/glfw3.h>
 #include "Dep/glm/glm.hpp"
 #include "Dep/glm/gtc/matrix_transform.hpp"
-#include "Renderer.h"
-#include "Texture.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "Food.h"
-#include "data.h"
 
 
 int main()
